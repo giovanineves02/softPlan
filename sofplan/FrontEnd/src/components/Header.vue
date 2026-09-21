@@ -34,6 +34,8 @@
       </nav>
 
       <button
+        type="button"
+        @click="irParaLogin"
         class="w-full cursor-pointer rounded-lg bg-[#2563EB] px-4 py-2 font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#22D3EE] hover:text-[#030D24] hover:shadow-[0_0_24px_rgba(34,211,238,0.7)] active:translate-y-0 md:w-auto">
         Entrar
       </button>
@@ -42,5 +44,12 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import logo from '../assets/logo.png'
+
+const router = useRouter()
+
+function irParaLogin() {
+  router.push('/login')
+}
 </script>

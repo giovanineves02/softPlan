@@ -1,5 +1,12 @@
 {
+  "scripts": {
+    "dev": "npm --prefix FrontEnd run dev",
+    "build": "npm --prefix FrontEnd run build",
+    "preview": "npm --prefix FrontEnd run preview"
+  },
   "dependencies": {
-    "vue-router": "^4.6.4"
+    "pinia": "^4.0.3",
+    "vue-router": "^4.6.4",
+    "xlsx": "^0.18.5"
   }
 }

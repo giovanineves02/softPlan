@@ -89,6 +89,9 @@
           <button v-if="store.dadosTratados.length" type="button" class="mt-8 w-full cursor-pointer rounded-md border border-[#2250A5] px-4 py-2.5 text-xs font-semibold text-[#93B8FF] transition-colors duration-200 hover:border-red-400/60 hover:bg-red-500/10 hover:text-red-300" @click="store.limpar">
             Limpar importação
           </button>
+          <button v-if="store.dadosTratados.length" type="button" class="mt-3 w-full cursor-pointer rounded-md bg-[#2563EB] px-4 py-2.5 text-xs font-semibold text-white transition-colors duration-200 hover:bg-[#1D4ED8]" @click="router.push('/relatorio')">
+            Ver relatório de validação
+          </button>
         </aside>
       </div>
 
@@ -96,8 +99,7 @@
       <section class="mt-4 rounded-xl border border-[#1A3972] bg-[#081333]/90 p-6 shadow-[0_18px_50px_rgba(0,0,0,0.12)] sm:p-8">
         <h3 class="text-sm font-semibold text-[#22D3EE]">Próxima etapa do projeto</h3>
         <p class="mt-2 text-sm leading-6 text-[#6E8DCE]">
-          Após o upload, os dados serão enviados ao backend Spring Boot via Axios. O tratamento de Ciência de Dados
-          ficará no Python/Pandas e a persistência no PostgreSQL/Azure.
+          Os dados são tratados e validados no navegador. Consulte o relatório para verificar registros válidos e problemas encontrados.
         </p>
       </section>
 
@@ -155,8 +157,9 @@ const store = useuploadStore()
 const menuAberto = ref(false)
 
 const menuItems = [
-  { label: 'Dashboard', active: false, comingSoon: true },
+  { label: 'Dashboard', active: false },
   { label: 'Importar dados', active: true },
+  { label: 'Relatório de validação', active: false },
   { label: 'Histórico', active: false, comingSoon: true },
   { label: 'Configurações', active: false, comingSoon: true }
 ]
@@ -174,7 +177,9 @@ function soltarArquivo(event) {
 }
 
 function selecionarMenu(item) {
-  if (item.label === 'Dashboard') router.push('/')
+  if (item.label === 'Dashboard') router.push('/dashboard')
+  if (item.label === 'Relatório de validação') router.push('/relatorio')
+  if (item.label === 'Importar dados') router.push('/upload')
   menuAberto.value = false
 }
 </script>

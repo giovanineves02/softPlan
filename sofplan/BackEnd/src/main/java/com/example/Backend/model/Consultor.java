@@ -15,6 +15,12 @@ public class Consultor {
 
     private String matricula;
 
+    @Column(unique = true)
+    private String email;
+
+    @Column
+    private String senha;
+
     @OneToMany(mappedBy = "consultor")
     private List<Cliente> clientes;
 
@@ -43,6 +49,22 @@ public class Consultor {
 
     public void setMatricula(String matricula) {
         this.matricula = matricula;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     public List<Cliente> getClientes() {

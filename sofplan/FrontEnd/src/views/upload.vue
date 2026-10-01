@@ -70,6 +70,12 @@
           </label>
 
           <p v-if="store.erro" class="mt-4 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-xs text-red-300">{{ store.erro }}</p>
+          <p v-if="store.enviando" role="status" class="mt-4 rounded-lg border border-[#2250A5] bg-[#0C234B] px-4 py-3 text-xs text-[#93B8FF]">Enviando os dados validados para o backend...</p>
+          <p v-else-if="store.respostaEnvio && !store.erroEnvio" role="status" class="mt-4 rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-xs text-emerald-300">{{ store.respostaEnvio.mensagem || 'Planilha enviada ao backend com sucesso.' }} {{ store.respostaEnvio.totalRegistros ? `(${store.respostaEnvio.totalRegistros} registros)` : '' }}</p>
+          <div v-if="store.erroEnvio" role="alert" class="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3">
+            <p class="text-xs text-red-300">{{ store.erroEnvio }}</p>
+            <button type="button" :disabled="store.enviando" class="cursor-pointer text-xs font-semibold text-[#93B8FF] underline underline-offset-2 disabled:opacity-50" @click="store.enviar_dados()">Tentar novamente</button>
+          </div>
         </section>
 
         <!-- Card: resumo -->

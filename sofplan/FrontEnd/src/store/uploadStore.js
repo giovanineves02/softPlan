@@ -35,7 +35,10 @@ export const useuploadStore = defineStore('upload', {
     dadosOriginais: [],
     dadosTratados: [],
     erros: [],
-    erro: ''
+    erro: '',
+    enviando: false,
+    erroEnvio: '',
+    respostaEnvio: null
   }),
 
   // GETTERS: totais e agrupamentos calculados para o relatório.
@@ -91,6 +94,8 @@ export const useuploadStore = defineStore('upload', {
   actions: {
     async lerArquivo(file) {
       this.erro = ''
+      this.erroEnvio = ''
+      this.respostaEnvio = null
       this.arquivo = file
       this.dadosOriginais = []
       this.dadosTratados = []
@@ -116,6 +121,7 @@ export const useuploadStore = defineStore('upload', {
 
         this.dadosOriginais = XLSX.utils.sheet_to_json(worksheet, { defval: '' })
         this.tratarDados()
+        await this.enviar_dados()
       } catch (error) {
         console.error(error)
         this.erro = 'Não foi possível ler a planilha.'
@@ -211,12 +217,54 @@ export const useuploadStore = defineStore('upload', {
       this.erros = ocorrencias
     },
 
+    async enviar_dados() {
+      this.erroEnvio = ''
+      this.respostaEnvio = null
+
+      if (!this.dadosTratados.length) {
+        this.erroEnvio = 'Não há dados de planilha para enviar.'
+        return false
+      }
+
+      this.enviando = true
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+
+      try {
+        const response = await fetch(`${baseUrl.replace(/\/$/, '')}/api/importacao`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nomeArquivo: this.arquivo?.name || '',
+            dados: this.dadosTratados
+          })
+        })
+
+        const resposta = await response.json().catch(() => null)
+        if (!response.ok) {
+          throw new Error(resposta?.message || resposta?.mensagem || `Falha ao enviar os dados (HTTP ${response.status}).`)
+        }
+
+        this.respostaEnvio = resposta || { sucesso: true }
+        return true
+      } catch (error) {
+        this.erroEnvio = error instanceof TypeError
+          ? 'Não foi possível conectar ao backend. Verifique se o servidor está em execução.'
+          : error.message || 'Ocorreu um erro ao enviar os dados.'
+        return false
+      } finally {
+        this.enviando = false
+      }
+    },
+
     limpar() {
       this.arquivo = null
       this.dadosOriginais = []
       this.dadosTratados = []
       this.erros = []
       this.erro = ''
+      this.enviando = false
+      this.erroEnvio = ''
+      this.respostaEnvio = null
     }
   }
 })
